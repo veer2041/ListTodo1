@@ -28,26 +28,15 @@ public class SecondActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                boolean b=db.insert(editText.getText().toString());
-                if(b==true){
                     Intent i=new Intent();
-                    i.putExtra("TEXT",s);
+                    i.putExtra("TEXT",editText.getText().toString());
                     Log.d("Second Activity",s);
 
                     setResult(RESULT_OK,i);
                     finish();
-                    Toast.makeText(SecondActivity.this,"Inserted",Toast.LENGTH_LONG).show();
                 }
-                else
-                {
-                    Intent i=new Intent();
-                    setResult(RESULT_CANCELED,i);
-                    finish();
-                    Toast.makeText(SecondActivity.this,"not Inserted",Toast.LENGTH_LONG).show();
-                }
-            }
         });
-        db.close();
+
 
 
     }

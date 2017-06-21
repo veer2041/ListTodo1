@@ -27,6 +27,8 @@ public class Dbhandler extends SQLiteOpenHelper {
     private static final String done="done";
     private static final int version=1;
     ArrayList list=new ArrayList();
+    ArrayList list2=new ArrayList();
+
     Context context;
     private static Dbhandler dbhandler;
     public static Dbhandler getInstance(Context context) {
@@ -81,7 +83,7 @@ public class Dbhandler extends SQLiteOpenHelper {
             return true;
         }
     }
-    public ArrayList getpending(){
+    public ArrayList<ItemList> getpending(){
         int i=0;
         list.clear();
         SQLiteDatabase db=this.getReadableDatabase();
@@ -99,30 +101,37 @@ public class Dbhandler extends SQLiteOpenHelper {
             db.close();
         }
         return list;
-
     }
-
     public  boolean updatedata(int id){
         Log.d("Dbhandler",String.valueOf(id));
         SQLiteDatabase db=this.getWritableDatabase();
         ContentValues contentValues=new ContentValues();
         contentValues.put(done,1);
-
        // long i="UPDATE "+ Dbtable +" SET done='1' WHERE id = " + id;
         db.execSQL("UPDATE "+ Dbtable +" SET done='1' WHERE id = " + id);
-
         Log.d("ListAdapter","updated");
         long i=db.update(Dbtable,contentValues,done,null);
 
         db.close();
         return i != -1;
     }
-    public Cursor getfinished(){
+    public ArrayList<ItemList> getfinished(){
         int i=1;
+        list2.clear();
         SQLiteDatabase db=this.getReadableDatabase();
-        String s="SELECT * FROM " + Dbtable + " WHERE done= "+i;
-        Log.d("Dbhandler ", s);
+        String s="SELECT * FROM " + Dbtable + " WHERE done="+i;
         Cursor cursor=db.rawQuery(s,null);
-        return cursor;
+        while (cursor.moveToNext()) {
+            ItemList itemList = new ItemList();
+            itemList.setId(cursor.getInt(0));
+            itemList.setList(cursor.getString(1));
+            itemList.setDone(cursor.getInt(2));
+            Log.d("DbHandler", String.valueOf(itemList.getId()));
+            Log.d("Dbhandler" + "getfinished", itemList.getList());
+            Log.d("Dbhandlerr", String.valueOf(itemList.getDone()));
+            list2.add(itemList);
+            db.close();
+        }
+        return list2;
     }
 }
